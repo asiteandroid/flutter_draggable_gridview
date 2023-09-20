@@ -5,11 +5,10 @@ part of draggable_grid_view;
 /// [isDraggable] is boolean, you want to allow dragging then set it true or else false.
 class DraggableGridItem {
   DraggableGridItem(
-      {required this.child, this.isDraggable = false, this.dragCallback,required this.value, required this.onTap});
+      {required this.child, this.isDraggable = false, this.dragCallback,required this.onTap});
 
   final bool isDraggable;
   final Widget child;
   final Function(BuildContext context, bool isDragging)? dragCallback;
-  final int value;
   final Function onTap;
 }
