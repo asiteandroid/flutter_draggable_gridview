@@ -45,18 +45,6 @@ class MyHomePage extends StatelessWidget {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                        builder: (context) =>
-                            const GridExample(title: 'Grid Example')),
-                  );
-                },
-                child: const Text('Grid Example'),
-              ),
-              const SizedBox(height: 50),
-              ElevatedButton(
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
                       builder: (context) =>
                           const GridWithScrollControllerExample(
                               title: 'Grid + ScrollController'),

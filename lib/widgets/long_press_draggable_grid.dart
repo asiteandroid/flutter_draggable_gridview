@@ -1,6 +1,8 @@
 part of draggable_grid_view;
 
 class LongPressDraggableGridView extends StatelessWidget {
+  final int pageIndex;
+
   /// [index] is use to get item from the list.
   final int index;
 
@@ -11,18 +13,27 @@ class LongPressDraggableGridView extends StatelessWidget {
   final Widget? childWhenDragging;
 
   final VoidCallback onDragCancelled;
+  final DeleteItem? onRemove;
+  final Widget? deleteWidget;
+  final bool? enableEditMode;
 
   const LongPressDraggableGridView({
+    required this.pageIndex,
     required this.index,
     required this.onDragCancelled,
     this.feedback,
     this.childWhenDragging,
+    this.onRemove,
+    this.deleteWidget,
+    this.enableEditMode,
     Key? key,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return LongPressDraggable(
+      maxSimultaneousDrags: 1,
+      ignoringFeedbackSemantics: false,
       onDraggableCanceled: (_, __) => onDragCancelled(),
       onDragCompleted: () {
         log('');
@@ -38,10 +49,25 @@ class LongPressDraggableGridView extends StatelessWidget {
         _dragStarted = false;
       },
       data: index,
-      feedback: feedback ?? _list[index].child,
-      childWhenDragging:
-          childWhenDragging ?? _draggedGridItem?.child ?? _list[index].child,
-      child: _list[index].child,
+      feedback: feedback ?? _listSublist[pageIndex][index].child,
+      childWhenDragging: childWhenDragging ?? _draggedGridItem?.child ?? _listSublist[pageIndex][index].child,
+      child: Stack(
+        children: [
+          _listSublist[pageIndex][index].child,
+          if(enableEditMode! && deleteWidget != null)
+
+          Positioned(
+            top: -1,
+            left: -1,
+            child: InkWell(
+              onTap: () {
+                onRemove!(_listSublist, index, pageIndex);
+              },
+              child:  deleteWidget!
+            ),
+          ),
+        ],
+      ),
     );
   }
 }

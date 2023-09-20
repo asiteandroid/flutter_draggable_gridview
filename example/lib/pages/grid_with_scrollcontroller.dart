@@ -1,35 +1,44 @@
 import 'dart:developer';
 
-import 'package:example/constants/images.dart';
-import 'package:example/widgets/grid_item_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter_draggable_gridview/flutter_draggable_gridview.dart';
 
 class GridWithScrollControllerExample extends StatefulWidget {
-  const GridWithScrollControllerExample({Key? key, required this.title})
-      : super(key: key);
+  const GridWithScrollControllerExample({Key? key, required this.title}) : super(key: key);
 
   final String title;
 
   @override
-  GridWithScrollControllerExampleState createState() =>
-      GridWithScrollControllerExampleState();
+  GridWithScrollControllerExampleState createState() => GridWithScrollControllerExampleState();
 }
 
-class GridWithScrollControllerExampleState
-    extends State<GridWithScrollControllerExample> {
-  final List<DraggableGridItem> _listOfDraggableGridItem = [];
+class GridWithScrollControllerExampleState extends State<GridWithScrollControllerExample> {
+  List<DraggableGridItem> _listOfDraggableGridItem = [];
   final ScrollController _scrollController = ScrollController(
     initialScrollOffset: 0.0,
     keepScrollOffset: true,
   );
 
+  bool isTablet = false;
+
+  bool enableEditMode = false;
+
   @override
   void initState() {
     _generateImageData();
+
+    final data = MediaQueryData.fromWindow(WidgetsBinding.instance.window);
+    if (data.size.shortestSide < 550) {
+      setState(() {
+        isTablet = false;
+      });
+    } else {
+      isTablet = true;
+    }
+
     SchedulerBinding.instance.addPostFrameCallback((timeStamp) {
-      _scrollController.jumpTo(_scrollController.position.maxScrollExtent);
+      //_scrollController.jumpTo(_scrollController.position.maxScrollExtent);
     });
     super.initState();
   }
@@ -42,79 +51,147 @@ class GridWithScrollControllerExampleState
         title: Text(widget.title),
       ),
       body: SafeArea(
-        child: DraggableGridViewBuilder(
-          controller: _scrollController,
-          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-            crossAxisCount: 2,
-            childAspectRatio: MediaQuery.of(context).size.width /
-                (MediaQuery.of(context).size.height / 3),
-          ),
-          children: _listOfDraggableGridItem,
-          dragCompletion: onDragAccept,
-          isOnlyLongPress: false,
-          dragFeedback: feedback,
-          dragPlaceHolder: placeHolder,
+        child: Column(
+          children: [
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Align(
+                alignment: Alignment.centerRight,
+                child: InkWell(
+                    onTap: () {
+                      setState(() {
+                        enableEditMode = !enableEditMode;
+                      });
+                    },
+                    child: const Text("Edit", style: TextStyle(fontSize: 24,color: Colors.blue))),
+              ),
+            ),
+            Expanded(
+              child: DraggableGridViewBuilder(
+                controller: _scrollController,
+                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: isTablet && MediaQuery.of(context).orientation == Orientation.landscape ? 5 : 3, childAspectRatio: isTablet && MediaQuery.of(context).orientation == Orientation.landscape ? MediaQuery.of(context).size.height * .25 / (MediaQuery.of(context).size.width / 5) : MediaQuery.of(context).size.width * .25 / (MediaQuery.of(context).size.height / 8), mainAxisSpacing: 20, crossAxisSpacing: 20),
+                children: _listOfDraggableGridItem,
+                shrinkWrap: true,
+                dragCompletion: onDragAccept,
+                isOnlyLongPress: true,
+                dragFeedback: feedback,
+                dragPlaceHolder: placeHolder,
+                onRemove: onRemoveItem,
+                deleteWidget: deleteItem(),
+                enableEditMode: enableEditMode,
+              ),
+            ),
+          ],
         ),
       ),
     );
   }
 
+  Widget deleteItem() {
+    return Container(
+        decoration: const BoxDecoration(color: Colors.black12, shape: BoxShape.circle),
+        padding: const EdgeInsets.all(10.0),
+        child: const Icon(
+          Icons.delete,
+          size: 30,
+        ));
+  }
+
   Widget feedback(List<DraggableGridItem> list, int index) {
-    return SizedBox(
-      width: 200,
-      height: 150,
-      child: list[index].child,
-    );
+    return isTablet
+        ? SizedBox(
+            width: 220,
+            height: 220,
+            child: list[index].child,
+          )
+        : SizedBox(
+            width: 120,
+            height: 120,
+            child: list[index].child,
+          );
+  }
+
+  onAddItem() {
+    _listOfDraggableGridItem.add(DraggableGridItem(
+        child: Padding(
+          padding: const EdgeInsets.all(20.0),
+          child: Card(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Image.asset('assets/4.jpeg'),
+                const Text("new", style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+              ],
+            ),
+          ),
+        ),
+        isDraggable: true,
+        dragCallback: (context, isDragging) {
+          log('isDragging: $isDragging');
+        },
+        value: 100,
+        onTap: () {
+          print("");
+        }));
+
+    setState(() {});
+  }
+
+  onRemoveItem(List<List<DraggableGridItem>> list, int index, int pageIndex) {
+    list[pageIndex].removeAt(index);
+    List<DraggableGridItem> updatedList = [];
+    for (var elementMain in list) {
+      for (var element in elementMain) {
+        updatedList.add(element);
+      }
+    }
+    _listOfDraggableGridItem = [...updatedList];
+
+    setState(() {});
   }
 
   PlaceHolderWidget placeHolder(List<DraggableGridItem> list, int index) {
     return PlaceHolderWidget(
-      child: Container(
-        color: Colors.white,
+      child: InkWell(
+        onTap: () {
+          print("Place holder index $index");
+        },
+        child: Container(
+          color: Colors.white,
+        ),
       ),
     );
   }
 
-  void onDragAccept(
-      List<DraggableGridItem> list, int beforeIndex, int afterIndex) {
+  void onDragAccept(List<DraggableGridItem> list, int beforeIndex, int afterIndex) {
     log('onDragAccept: $beforeIndex -> $afterIndex');
   }
 
   void _generateImageData() {
-    _listOfDraggableGridItem.addAll(
-      [
+    for (int i = 0; i < 37; i++) {
+      _listOfDraggableGridItem.add(
         DraggableGridItem(
-          child: const GridItem(image: Images.asset_1),
-          isDraggable: true,
-          dragCallback: (context, isDragging) {
-            log('isDragging: $isDragging');
-          },
-        ),
-        DraggableGridItem(
-            child: const GridItem(image: Images.asset_2), isDraggable: true),
-        DraggableGridItem(
-            child: const GridItem(image: Images.asset_3), isDraggable: true),
-        DraggableGridItem(
-            child: const GridItem(image: Images.asset_4), isDraggable: true),
-        DraggableGridItem(
-            child: const GridItem(image: Images.asset_5), isDraggable: false),
-        DraggableGridItem(
-            child: const GridItem(image: Images.asset_6), isDraggable: true),
-        DraggableGridItem(
-            child: const GridItem(image: Images.asset_7), isDraggable: true),
-        DraggableGridItem(
-            child: const GridItem(image: Images.asset_8), isDraggable: true),
-        DraggableGridItem(
-            child: const GridItem(image: Images.asset_9), isDraggable: true),
-        DraggableGridItem(
-            child: const GridItem(image: Images.asset_10), isDraggable: true),
-        DraggableGridItem(
-            child: const GridItem(image: Images.asset_11), isDraggable: true),
-        DraggableGridItem(
-            child: const GridItem(image: Images.asset_12), isDraggable: true),
-        DraggableGridItem(
-            child: const GridItem(image: Images.asset_13), isDraggable: true),
-      ],
-    );
+            child: Padding(
+              padding: const EdgeInsets.all(20.0),
+              child: Card(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Image.asset('assets/4.jpeg'),
+                    Text(i.toString(), style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+                  ],
+                ),
+              ),
+            ),
+            isDraggable: true,
+            dragCallback: (context, isDragging) {
+              log('isDragging: $isDragging');
+            },
+            value: i,
+            onTap: () {
+              print("");
+            }),
+      );
+    }
   }
 }

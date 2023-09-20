@@ -1,6 +1,7 @@
 part of draggable_grid_view;
 
 class PressDraggableGridView extends StatelessWidget {
+  final int pageIndex;
   final int index;
   final Widget? feedback;
   final Widget? childWhenDragging;
@@ -8,6 +9,7 @@ class PressDraggableGridView extends StatelessWidget {
 
   const PressDraggableGridView({
     Key? key,
+    required this.pageIndex,
     required this.index,
     required this.onDragCancelled,
     this.feedback,
@@ -29,10 +31,10 @@ class PressDraggableGridView extends StatelessWidget {
         _dragStarted = false;
       },
       data: index,
-      feedback: feedback ?? _list[index].child,
+      feedback: feedback ?? _listSublist[pageIndex][index].child,
       childWhenDragging:
-          childWhenDragging ?? _draggedGridItem?.child ?? _list[index].child,
-      child: _list[index].child,
+          childWhenDragging ?? _draggedGridItem?.child ?? _listSublist[pageIndex][index].child,
+      child: _listSublist[pageIndex][index].child,
     );
   }
 }

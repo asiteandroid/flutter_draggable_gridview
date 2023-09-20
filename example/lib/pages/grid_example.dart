@@ -74,7 +74,7 @@ class GridExampleState extends State<GridExample> {
   void _generateImageData() {
     _listOfDraggableGridItem.addAll(
       [
-        DraggableGridItem(
+        /*DraggableGridItem(
           child: const GridItem(image: Images.asset_1),
           isDraggable: true,
           dragCallback: (context, isDragging) {
@@ -104,7 +104,7 @@ class GridExampleState extends State<GridExample> {
         DraggableGridItem(
             child: const GridItem(image: Images.asset_12), isDraggable: true),
         DraggableGridItem(
-            child: const GridItem(image: Images.asset_13), isDraggable: true),
+            child: const GridItem(image: Images.asset_13), isDraggable: true),*/
       ],
     );
   }

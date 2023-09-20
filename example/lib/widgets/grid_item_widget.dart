@@ -7,14 +7,21 @@ class GridItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.symmetric(
-        horizontal: Dimens.paddingSmall,
-        vertical: Dimens.paddingSmall,
-      ),
-      child: Image.asset(
-        image,
-        fit: BoxFit.cover,
+    return Material(
+      child: InkWell(
+        onTap: (){
+          print("Click change");
+        },
+        child: Container(
+          padding: const EdgeInsets.symmetric(
+            horizontal: Dimens.paddingSmall,
+            vertical: Dimens.paddingSmall,
+          ),
+          child: Image.asset(
+            image,
+            fit: BoxFit.cover,
+          ),
+        ),
       ),
     );
   }
