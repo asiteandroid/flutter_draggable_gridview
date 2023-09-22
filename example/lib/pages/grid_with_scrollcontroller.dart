@@ -128,9 +128,6 @@ class GridWithScrollControllerExampleState extends State<GridWithScrollControlle
         isDraggable: true,
         dragCallback: (context, isDragging) {
           log('isDragging: $isDragging');
-        },
-        onTap: () {
-          print("");
         }));
 
     setState(() {});
@@ -185,9 +182,6 @@ class GridWithScrollControllerExampleState extends State<GridWithScrollControlle
             isDraggable: true,
             dragCallback: (context, isDragging) {
               log('isDragging: $isDragging');
-            },
-            onTap: () {
-              print("");
             }),
       );
     }
