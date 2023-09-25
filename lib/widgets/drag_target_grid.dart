@@ -8,11 +8,9 @@ class DragTargetGrid extends StatefulWidget {
   final Widget? childWhenDragging;
   final PlaceHolderWidget? placeHolder;
   final DragCompletion? dragCompletion;
-  final DeleteItem deleteItem;
-  final Widget? deleteWidget;
   final bool? enableEditMode;
 
-  const DragTargetGrid({Key? key, required this.pageIndex, required this.index, required this.onChangeCallback, this.feedback, this.childWhenDragging, this.placeHolder, required this.dragCompletion, required this.deleteItem, this.deleteWidget, this.enableEditMode}) : super(key: key);
+  const DragTargetGrid({Key? key, required this.pageIndex, required this.index, required this.onChangeCallback, this.feedback, this.childWhenDragging, this.placeHolder, required this.dragCompletion, this.enableEditMode}) : super(key: key);
 
   @override
   DragTargetGridState createState() => DragTargetGridState();
@@ -69,8 +67,6 @@ class DragTargetGridState extends State<DragTargetGrid> {
                 onDragCancelled: () {
                   _onDragCancel(widget.pageIndex);
                 },
-                onRemove: widget.deleteItem,
-                deleteWidget: widget.deleteWidget,
                 enableEditMode: widget.enableEditMode,
               )
             : PressDraggableGridView(

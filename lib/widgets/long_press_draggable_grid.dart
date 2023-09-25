@@ -13,8 +13,6 @@ class LongPressDraggableGridView extends StatelessWidget {
   final Widget? childWhenDragging;
 
   final VoidCallback onDragCancelled;
-  final DeleteItem? onRemove;
-  final Widget? deleteWidget;
   final bool? enableEditMode;
 
   const LongPressDraggableGridView({
@@ -23,8 +21,6 @@ class LongPressDraggableGridView extends StatelessWidget {
     required this.onDragCancelled,
     this.feedback,
     this.childWhenDragging,
-    this.onRemove,
-    this.deleteWidget,
     this.enableEditMode,
     Key? key,
   }) : super(key: key);
@@ -51,23 +47,7 @@ class LongPressDraggableGridView extends StatelessWidget {
       data: index,
       feedback: feedback ?? _listSublist[pageIndex][index].child,
       childWhenDragging: childWhenDragging ?? _draggedGridItem?.child ?? _listSublist[pageIndex][index].child,
-      child: Stack(
-        children: [
-          _listSublist[pageIndex][index].child,
-          if(enableEditMode! && deleteWidget != null)
-
-          Positioned(
-            top: -1,
-            left: -1,
-            child: InkWell(
-              onTap: () {
-                onRemove!(_listSublist, index, pageIndex);
-              },
-              child:  deleteWidget!
-            ),
-          ),
-        ],
-      ),
+      child: _listSublist[pageIndex][index].child,
     );
   }
 }

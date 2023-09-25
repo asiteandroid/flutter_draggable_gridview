@@ -228,8 +228,6 @@ class DraggableGridViewBuilderState extends State<DraggableGridViewBuilder> {
                               childWhenDragging: widget.dragChildWhenDragging?.call(_orgList, index),
                               placeHolder: widget.dragPlaceHolder?.call(_orgList, index),
                               dragCompletion: widget.dragCompletion,
-                              deleteItem: widget.onRemove!,
-                              deleteWidget: widget.deleteWidget,
                               enableEditMode: widget.enableEditMode,
                             );
                     },

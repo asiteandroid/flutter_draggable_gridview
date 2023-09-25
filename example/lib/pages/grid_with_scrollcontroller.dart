@@ -76,8 +76,6 @@ class GridWithScrollControllerExampleState extends State<GridWithScrollControlle
                 isOnlyLongPress: true,
                 dragFeedback: feedback,
                 dragPlaceHolder: placeHolder,
-                onRemove: onRemoveItem,
-                deleteWidget: deleteItem(),
                 enableEditMode: enableEditMode,
               ),
             ),
@@ -87,14 +85,19 @@ class GridWithScrollControllerExampleState extends State<GridWithScrollControlle
     );
   }
 
-  Widget deleteItem() {
-    return Container(
-        decoration: const BoxDecoration(color: Colors.black12, shape: BoxShape.circle),
-        padding: const EdgeInsets.all(10.0),
-        child: const Icon(
-          Icons.delete,
-          size: 30,
-        ));
+  Widget deleteItem(DraggableGridItem listOfDraggableGridItem) {
+    return InkWell(
+      onTap: (){
+        onRemoveItem(listOfDraggableGridItem);
+      },
+      child: Container(
+          decoration: const BoxDecoration(color: Colors.black12, shape: BoxShape.circle),
+          padding: const EdgeInsets.all(10.0),
+          child: const Icon(
+            Icons.delete,
+            size: 30,
+          )),
+    );
   }
 
   Widget feedback(List<DraggableGridItem> list, int index) {
@@ -133,15 +136,8 @@ class GridWithScrollControllerExampleState extends State<GridWithScrollControlle
     setState(() {});
   }
 
-  onRemoveItem(List<List<DraggableGridItem>> list, int index, int pageIndex) {
-    list[pageIndex].removeAt(index);
-    List<DraggableGridItem> updatedList = [];
-    for (var elementMain in list) {
-      for (var element in elementMain) {
-        updatedList.add(element);
-      }
-    }
-    _listOfDraggableGridItem = [...updatedList];
+  onRemoveItem(DraggableGridItem item) {
+    _listOfDraggableGridItem.remove(item);
 
     setState(() {});
   }
@@ -169,14 +165,19 @@ class GridWithScrollControllerExampleState extends State<GridWithScrollControlle
         DraggableGridItem(
             child: Padding(
               padding: const EdgeInsets.all(20.0),
-              child: Card(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Image.asset('assets/4.jpeg'),
-                    Text(i.toString(), style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
-                  ],
-                ),
+              child: Stack(
+                children: [
+                  Card(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Image.asset('assets/4.jpeg'),
+                        Text(i.toString(), style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+                      ],
+                    ),
+                  ),
+                  // deleteItem(_listOfDraggableGridItem[i])
+                ],
               ),
             ),
             isDraggable: true,
