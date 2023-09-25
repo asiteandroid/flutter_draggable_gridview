@@ -63,37 +63,9 @@ class DraggableGridViewBuilder extends StatefulWidget {
   final ScrollViewKeyboardDismissBehavior keyboardDismissBehavior;
   final String? restorationId;
   final Clip clipBehavior;
-  final DeleteItem? onRemove;
-  final Widget? deleteWidget;
+  final int currentPageItemLength;
 
-  const DraggableGridViewBuilder({
-    Key? key,
-    required this.gridDelegate,
-    required this.children,
-    required this.dragCompletion,
-    this.isOnlyLongPress = true,
-    this.dragFeedback,
-    this.dragChildWhenDragging,
-    this.dragPlaceHolder,
-    this.scrollDirection = Axis.vertical,
-    this.reverse = false,
-    this.controller,
-    this.primary,
-    this.physics,
-    this.shrinkWrap = false,
-    this.padding,
-    this.addAutomaticKeepAlives = true,
-    this.addRepaintBoundaries = true,
-    this.addSemanticIndexes = true,
-    this.cacheExtent,
-    this.semanticChildCount,
-    this.dragStartBehavior = DragStartBehavior.start,
-    this.keyboardDismissBehavior = ScrollViewKeyboardDismissBehavior.manual,
-    this.restorationId,
-    this.clipBehavior = Clip.hardEdge,
-    this.onRemove,
-    this.deleteWidget,
-  }) : super(key: key);
+  const DraggableGridViewBuilder({Key? key, required this.gridDelegate, required this.children, required this.dragCompletion, this.isOnlyLongPress = true, this.dragFeedback, this.dragChildWhenDragging, this.dragPlaceHolder, this.scrollDirection = Axis.vertical, this.reverse = false, this.controller, this.primary, this.physics, this.shrinkWrap = false, this.padding, this.addAutomaticKeepAlives = true, this.addRepaintBoundaries = true, this.addSemanticIndexes = true, this.cacheExtent, this.semanticChildCount, this.dragStartBehavior = DragStartBehavior.start, this.keyboardDismissBehavior = ScrollViewKeyboardDismissBehavior.manual, this.restorationId, this.clipBehavior = Clip.hardEdge, this.currentPageItemLength = 15}) : super(key: key);
 
   @override
   DraggableGridViewBuilderState createState() => DraggableGridViewBuilderState();
@@ -111,6 +83,7 @@ class DraggableGridViewBuilderState extends State<DraggableGridViewBuilder> {
     assert(widget.children.isNotEmpty, 'Children must not be empty.');
 
     /// [orgList] will set when the drag completes.
+    subListLength = widget.currentPageItemLength;
     _orgList = [...widget.children];
     _isOnlyLongPress = widget.isOnlyLongPress;
 
@@ -139,6 +112,7 @@ class DraggableGridViewBuilderState extends State<DraggableGridViewBuilder> {
     super.didUpdateWidget(oldWidget);
     assert(widget.children.isNotEmpty, 'Children must not be empty.');
 
+    subListLength = widget.currentPageItemLength;
     _orgList = [...widget.children];
     _listSublist.clear();
     _originalSublist.clear();
