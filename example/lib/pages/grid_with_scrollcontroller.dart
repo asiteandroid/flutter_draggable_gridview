@@ -75,8 +75,7 @@ class GridWithScrollControllerExampleState extends State<GridWithScrollControlle
                 dragCompletion: onDragAccept,
                 isOnlyLongPress: true,
                 dragFeedback: feedback,
-                dragPlaceHolder: placeHolder,
-                enableEditMode: enableEditMode,
+                dragPlaceHolder: placeHolder
               ),
             ),
           ],

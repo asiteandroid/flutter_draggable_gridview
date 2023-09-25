@@ -65,7 +65,6 @@ class DraggableGridViewBuilder extends StatefulWidget {
   final Clip clipBehavior;
   final DeleteItem? onRemove;
   final Widget? deleteWidget;
-  final bool enableEditMode;
 
   const DraggableGridViewBuilder({
     Key? key,
@@ -94,7 +93,6 @@ class DraggableGridViewBuilder extends StatefulWidget {
     this.clipBehavior = Clip.hardEdge,
     this.onRemove,
     this.deleteWidget,
-    this.enableEditMode = false,
   }) : super(key: key);
 
   @override
@@ -228,7 +226,6 @@ class DraggableGridViewBuilderState extends State<DraggableGridViewBuilder> {
                               childWhenDragging: widget.dragChildWhenDragging?.call(_orgList, index),
                               placeHolder: widget.dragPlaceHolder?.call(_orgList, index),
                               dragCompletion: widget.dragCompletion,
-                              enableEditMode: widget.enableEditMode,
                             );
                     },
                     itemCount: _listSublist[pageIndex].length,

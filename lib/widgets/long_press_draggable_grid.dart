@@ -13,7 +13,6 @@ class LongPressDraggableGridView extends StatelessWidget {
   final Widget? childWhenDragging;
 
   final VoidCallback onDragCancelled;
-  final bool? enableEditMode;
 
   const LongPressDraggableGridView({
     required this.pageIndex,
@@ -21,7 +20,6 @@ class LongPressDraggableGridView extends StatelessWidget {
     required this.onDragCancelled,
     this.feedback,
     this.childWhenDragging,
-    this.enableEditMode,
     Key? key,
   }) : super(key: key);
 
