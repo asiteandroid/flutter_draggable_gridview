@@ -155,7 +155,7 @@ class GridWithScrollControllerExampleState extends State<GridWithScrollControlle
   }
 
   void onDragAccept(List<DraggableGridItem> list, int beforeIndex, int afterIndex) {
-    log('onDragAccept: $beforeIndex -> $afterIndex');
+    log('onDragAccept: $beforeIndex $afterIndex');
   }
 
   void _generateImageData() {

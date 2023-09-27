@@ -180,6 +180,7 @@ class DragTargetGridState extends State<DragTargetGrid> {
 
   /// This method will execute when dragging is completes or else dragging is cancelled.
   void _onDragComplete(int index) {
+    List<DraggableGridItem> newDragList = [];
     if (_draggedIndex == -1) return;
 
     if (_originPageIndex == widget.pageIndex) {
@@ -197,6 +198,7 @@ class DragTargetGridState extends State<DragTargetGrid> {
         List<DraggableGridItem> newList = [];
         for (var element in mainList) {
           newList.add(element);
+          newDragList.add(element);
         }
         _originalSublist.add(newList);
       }
@@ -216,9 +218,9 @@ class DragTargetGridState extends State<DragTargetGrid> {
       for (var element in _listSublist) {
         for (var value in element) {
           tempList.add(value);
+          newDragList.add(value);
         }
       }
-
       _listSublist.clear();
       _originalSublist.clear();
       for (int i = 0; i <= tempList.length; i += subListLength) {
@@ -227,10 +229,11 @@ class DragTargetGridState extends State<DragTargetGrid> {
       }
     }
 
-    setDefaultValue();
+    setDefaultValue(newDragList);
   }
 
   _onDragCancel(int index) {
+    List<DraggableGridItem> newDragList = [];
     if (_activePage == _listSublist.length - 1) {
       if (_listSublist.last.length < subListLength) {
         if (!isGridInternalUpdate) {
@@ -246,6 +249,7 @@ class DragTargetGridState extends State<DragTargetGrid> {
         for (var element in _listSublist) {
           for (var value in element) {
             tempList.add(value);
+            newDragList.add(value);
           }
         }
 
@@ -261,6 +265,7 @@ class DragTargetGridState extends State<DragTargetGrid> {
       for (var element in _originalSublist) {
         for (var value in element) {
           tempList.add(value);
+          newDragList.add(value);
         }
       }
 
@@ -272,15 +277,17 @@ class DragTargetGridState extends State<DragTargetGrid> {
       }
     }
 
-    setDefaultValue();
+    setDefaultValue(newDragList);
   }
 
-  setDefaultValue() {
+  setDefaultValue(List<DraggableGridItem> list) {
     _dragStarted = false;
     _dragEnded = true;
     widget.onChangeCallback?.call();
     //_listSublist[widget.pageIndex][index].dragCallback?.call(context, false);
-    widget.dragCompletion?.call(_originalSublist[widget.pageIndex], _draggedIndex, _lastIndex);
+    _draggedIndex = subListLength*(_originPageIndex) +_draggedIndex;
+    _lastIndex = subListLength*(widget.pageIndex)+_lastIndex;
+    widget.dragCompletion?.call(list, _draggedIndex, _lastIndex);
     _draggedIndex = -1;
     replacePlaceHolder = false;
     _lastIndex = -1;

@@ -9,9 +9,7 @@ class GridItem extends StatelessWidget {
   Widget build(BuildContext context) {
     return Material(
       child: InkWell(
-        onTap: (){
-          print("Click change");
-        },
+        onTap: (){},
         child: Container(
           padding: const EdgeInsets.symmetric(
             horizontal: Dimens.paddingSmall,

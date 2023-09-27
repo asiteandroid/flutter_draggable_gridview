@@ -64,8 +64,10 @@ class DraggableGridViewBuilder extends StatefulWidget {
   final String? restorationId;
   final Clip clipBehavior;
   final int currentPageItemLength;
+  final Color? currentPageIndicatorColor;
+  final Color? otherPageIndicatorColor;
 
-  const DraggableGridViewBuilder({Key? key, required this.gridDelegate, required this.children, required this.dragCompletion, this.isOnlyLongPress = true, this.dragFeedback, this.dragChildWhenDragging, this.dragPlaceHolder, this.scrollDirection = Axis.vertical, this.reverse = false, this.controller, this.primary, this.physics, this.shrinkWrap = false, this.padding, this.addAutomaticKeepAlives = true, this.addRepaintBoundaries = true, this.addSemanticIndexes = true, this.cacheExtent, this.semanticChildCount, this.dragStartBehavior = DragStartBehavior.start, this.keyboardDismissBehavior = ScrollViewKeyboardDismissBehavior.manual, this.restorationId, this.clipBehavior = Clip.hardEdge, this.currentPageItemLength = 15}) : super(key: key);
+  const DraggableGridViewBuilder({Key? key, required this.gridDelegate, required this.children, required this.dragCompletion, this.isOnlyLongPress = true, this.dragFeedback, this.dragChildWhenDragging, this.dragPlaceHolder, this.scrollDirection = Axis.vertical, this.reverse = false, this.controller, this.primary, this.physics, this.shrinkWrap = false, this.padding, this.addAutomaticKeepAlives = true, this.addRepaintBoundaries = true, this.addSemanticIndexes = true, this.cacheExtent, this.semanticChildCount, this.dragStartBehavior = DragStartBehavior.start, this.keyboardDismissBehavior = ScrollViewKeyboardDismissBehavior.manual, this.restorationId, this.clipBehavior = Clip.hardEdge, this.currentPageItemLength = 15, this.currentPageIndicatorColor = Colors.blue, this.otherPageIndicatorColor = Colors.grey,}) : super(key: key);
 
   @override
   DraggableGridViewBuilderState createState() => DraggableGridViewBuilderState();
@@ -78,7 +80,6 @@ class DraggableGridViewBuilderState extends State<DraggableGridViewBuilder> {
 
   @override
   void initState() {
-    print("init called");
     super.initState();
     assert(widget.children.isNotEmpty, 'Children must not be empty.');
 
@@ -108,7 +109,6 @@ class DraggableGridViewBuilderState extends State<DraggableGridViewBuilder> {
 
   @override
   void didUpdateWidget(DraggableGridViewBuilder oldWidget) {
-    print("Did update widget called ${oldWidget}");
     super.didUpdateWidget(oldWidget);
     assert(widget.children.isNotEmpty, 'Children must not be empty.');
 
@@ -123,7 +123,6 @@ class DraggableGridViewBuilderState extends State<DraggableGridViewBuilder> {
       _originalSublist.add(_orgList.sublist(i, i + subListLength > _orgList.length ? _orgList.length : i + subListLength));
     }
     _isOnlyLongPress = widget.isOnlyLongPress;
-    print("_originalSublist $_originalSublist");
     setState(() {});
   }
 
@@ -148,27 +147,9 @@ class DraggableGridViewBuilderState extends State<DraggableGridViewBuilder> {
 
                     if (_draggedGridItem != null && _isDragging) {
                       if (dragOffset.dx > MediaQuery.of(context).size.width - 30) {
-                        pageController.animateToPage(_activePage + 1, duration: const Duration(milliseconds: 300), curve: Curves.linear);
-                        setState(() {
-                          _isDragging = false;
-                        });
-
-                        Future.delayed(const Duration(milliseconds: 1500), () {
-                          setState(() {
-                            _isDragging = true;
-                          });
-                        });
+                        autoPageChange(_activePage+1);
                       } else if (dragOffset.dx < 30) {
-                        pageController.animateToPage(_activePage - 1, duration: const Duration(milliseconds: 300), curve: Curves.linear);
-                        setState(() {
-                          _isDragging = false;
-                        });
-
-                        Future.delayed(const Duration(milliseconds: 1500), () {
-                          setState(() {
-                            _isDragging = true;
-                          });
-                        });
+                        autoPageChange(_activePage-1);
                       }
                     }
                   },
@@ -215,10 +196,23 @@ class DraggableGridViewBuilderState extends State<DraggableGridViewBuilder> {
                       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 12),
                       child: CircleAvatar(
                         radius: 4,
-                        backgroundColor: _activePage == index ? Colors.blue : Colors.grey,
+                        backgroundColor: _activePage == index ? widget.currentPageIndicatorColor : widget.otherPageIndicatorColor,
                       ),
                     ))),
       ],
     );
+  }
+
+  autoPageChange(page){
+    pageController.animateToPage(page, duration: const Duration(milliseconds: 300), curve: Curves.linear);
+    setState(() {
+      _isDragging = false;
+    });
+
+    Future.delayed(const Duration(milliseconds: 1200), () {
+      setState(() {
+        _isDragging = true;
+      });
+    });
   }
 }
