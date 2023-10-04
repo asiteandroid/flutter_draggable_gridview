@@ -87,6 +87,7 @@ class DragTargetGridState extends State<DragTargetGrid> {
       _draggedGridItem = DraggableGridItem(
           child: widget.placeHolder ?? const EmptyItem(),
           isDraggable: true,
+          dragData: null
           );
       _lastIndex = _draggedIndex;
     }
@@ -118,7 +119,7 @@ class DragTargetGridState extends State<DragTargetGrid> {
 
       /// If dragged index and current index both are same then show place holder widget(if user it overridden). else show EmptyItem class.
       if (_draggedIndex == _lastIndex) {
-        _draggedGridItem = DraggableGridItem(child: widget.placeHolder ?? const EmptyItem(), isDraggable: true);
+        _draggedGridItem = DraggableGridItem(child: widget.placeHolder ?? const EmptyItem(), isDraggable: true,dragData: null);
       }
 
       if (!_draggedIndexRemoved) {
@@ -129,7 +130,9 @@ class DragTargetGridState extends State<DragTargetGrid> {
         _lastIndex,
         DraggableGridItem(
             child: widget.placeHolder ?? const EmptyItem(),
-            isDraggable: true,),
+            isDraggable: true,
+          dragData: null
+        ),
       );
 
       setState(() {
@@ -171,6 +174,7 @@ class DragTargetGridState extends State<DragTargetGrid> {
         _draggedGridItem = DraggableGridItem(
             child: widget.placeHolder ?? const EmptyItem(),
             isDraggable: true,
+          dragData: null
             );
       }
 

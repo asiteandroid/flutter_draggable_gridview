@@ -127,6 +127,7 @@ class GridWithScrollControllerExampleState extends State<GridWithScrollControlle
             ),
           ),
         ),
+        dragData: DragItemDataObject(),
         isDraggable: true,
         dragCallback: (context, isDragging) {
           log('isDragging: $isDragging');
@@ -156,6 +157,9 @@ class GridWithScrollControllerExampleState extends State<GridWithScrollControlle
 
   void onDragAccept(List<DraggableGridItem> list, int beforeIndex, int afterIndex) {
     log('onDragAccept: $beforeIndex $afterIndex');
+    for (var element in list) {
+      log("onDragAccept: data ${element.dragData}");
+    }
   }
 
   void _generateImageData() {
@@ -179,6 +183,7 @@ class GridWithScrollControllerExampleState extends State<GridWithScrollControlle
                 ],
               ),
             ),
+            dragData: DragItemDataObject(),
             isDraggable: true,
             dragCallback: (context, isDragging) {
               log('isDragging: $isDragging');
@@ -187,3 +192,6 @@ class GridWithScrollControllerExampleState extends State<GridWithScrollControlle
     }
   }
 }
+
+
+class DragItemDataObject{}
