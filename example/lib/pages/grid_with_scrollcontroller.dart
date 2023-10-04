@@ -53,23 +53,10 @@ class GridWithScrollControllerExampleState extends State<GridWithScrollControlle
       body: SafeArea(
         child: Column(
           children: [
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Align(
-                alignment: Alignment.centerRight,
-                child: InkWell(
-                    onTap: () {
-                      setState(() {
-                        enableEditMode = !enableEditMode;
-                      });
-                    },
-                    child: const Text("Edit", style: TextStyle(fontSize: 24,color: Colors.blue))),
-              ),
-            ),
             Expanded(
               child: DraggableGridViewBuilder(
                 controller: _scrollController,
-                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: isTablet && MediaQuery.of(context).orientation == Orientation.landscape ? 5 : 3, childAspectRatio: isTablet && MediaQuery.of(context).orientation == Orientation.landscape ? MediaQuery.of(context).size.height * .25 / (MediaQuery.of(context).size.width / 5) : MediaQuery.of(context).size.width * .25 / (MediaQuery.of(context).size.height / 8), mainAxisSpacing: 20, crossAxisSpacing: 20),
+                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: isTablet && MediaQuery.of(context).orientation == Orientation.landscape ? 5 : 3, childAspectRatio: 1, mainAxisSpacing: 0, crossAxisSpacing: 0),
                 children: _listOfDraggableGridItem,
                 shrinkWrap: true,
                 dragCompletion: onDragAccept,
