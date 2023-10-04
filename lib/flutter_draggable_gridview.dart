@@ -138,7 +138,7 @@ class DraggableGridViewBuilderState extends State<DraggableGridViewBuilder> {
               pageSnapping: true,
               allowImplicitScrolling: false,
               scrollDirection: Axis.horizontal,
-              physics: const BouncingScrollPhysics(),
+              physics: const ClampingScrollPhysics(),
               itemBuilder: (_, pageIndex) {
                 return Listener(
                   onPointerMove: (event) {
