@@ -67,7 +67,7 @@ class DraggableGridViewBuilder extends StatefulWidget {
   final Color? currentPageIndicatorColor;
   final Color? otherPageIndicatorColor;
 
-  const DraggableGridViewBuilder({Key? key, required this.gridDelegate, required this.children, required this.dragCompletion, this.isOnlyLongPress = true, this.dragFeedback, this.dragChildWhenDragging, this.dragPlaceHolder, this.scrollDirection = Axis.vertical, this.reverse = false, this.controller, this.primary, this.physics, this.shrinkWrap = false, this.padding, this.addAutomaticKeepAlives = true, this.addRepaintBoundaries = true, this.addSemanticIndexes = true, this.cacheExtent, this.semanticChildCount, this.dragStartBehavior = DragStartBehavior.start, this.keyboardDismissBehavior = ScrollViewKeyboardDismissBehavior.manual, this.restorationId, this.clipBehavior = Clip.hardEdge, this.currentPageItemLength = 15, this.currentPageIndicatorColor = Colors.blue, this.otherPageIndicatorColor = Colors.grey,}) : super(key: key);
+  const DraggableGridViewBuilder({Key? key, required this.gridDelegate, required this.children, required this.dragCompletion, this.isOnlyLongPress = true, this.dragFeedback, this.dragChildWhenDragging, this.dragPlaceHolder, this.scrollDirection = Axis.vertical, this.reverse = false, this.controller, this.primary, this.physics, this.shrinkWrap = false, this.padding, this.addAutomaticKeepAlives = true, this.addRepaintBoundaries = true, this.addSemanticIndexes = true, this.cacheExtent, this.semanticChildCount, this.dragStartBehavior = DragStartBehavior.start, this.keyboardDismissBehavior = ScrollViewKeyboardDismissBehavior.manual, this.restorationId, this.clipBehavior = Clip.hardEdge, this.currentPageItemLength = 15, this.currentPageIndicatorColor = Colors.blue, this.otherPageIndicatorColor = Colors.grey}) : super(key: key);
 
   @override
   DraggableGridViewBuilderState createState() => DraggableGridViewBuilderState();
@@ -77,6 +77,7 @@ class DraggableGridViewBuilderState extends State<DraggableGridViewBuilder> {
   PageController pageController = PageController(keepPage: true);
   final _pageViewKey = GlobalKey();
   bool _isDragging = true;
+  final List<GlobalKey> pageIndicatorKey = [];
 
   @override
   void initState() {
@@ -92,17 +93,18 @@ class DraggableGridViewBuilderState extends State<DraggableGridViewBuilder> {
     _originalSublist.clear();
     for (var i = 0; i < _orgList.length; i += subListLength) {
       _listSublist.add(_orgList.sublist(i, i + subListLength > _orgList.length ? _orgList.length : i + subListLength));
+      pageIndicatorKey.add(GlobalKey());
     }
     for (var i = 0; i < _orgList.length; i += subListLength) {
       _originalSublist.add(_orgList.sublist(i, i + subListLength > _orgList.length ? _orgList.length : i + subListLength));
     }
     _activePage = 0;
-
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       pageController.addListener(() {
         setState(() {
           _activePage = pageController.page!.ceil();
         });
+        Scrollable.ensureVisible(pageIndicatorKey[_activePage].currentContext!, alignment: 0.5, duration: const Duration(milliseconds: 100));
       });
     });
   }
@@ -114,10 +116,12 @@ class DraggableGridViewBuilderState extends State<DraggableGridViewBuilder> {
 
     subListLength = widget.currentPageItemLength;
     _orgList = [...widget.children];
+    pageIndicatorKey.clear();
     _listSublist.clear();
     _originalSublist.clear();
     for (var i = 0; i < _orgList.length; i += subListLength) {
       _listSublist.add(_orgList.sublist(i, i + subListLength > _orgList.length ? _orgList.length : i + subListLength));
+      pageIndicatorKey.add(GlobalKey());
     }
     for (var i = 0; i < _orgList.length; i += subListLength) {
       _originalSublist.add(_orgList.sublist(i, i + subListLength > _orgList.length ? _orgList.length : i + subListLength));
@@ -147,9 +151,9 @@ class DraggableGridViewBuilderState extends State<DraggableGridViewBuilder> {
 
                     if (_draggedGridItem != null && _isDragging) {
                       if (dragOffset.dx > MediaQuery.of(context).size.width - 30) {
-                        autoPageChange(_activePage+1);
+                        autoPageChange(_activePage + 1);
                       } else if (dragOffset.dx < 30) {
-                        autoPageChange(_activePage-1);
+                        autoPageChange(_activePage - 1);
                       }
                     }
                   },
@@ -188,26 +192,35 @@ class DraggableGridViewBuilderState extends State<DraggableGridViewBuilder> {
                 );
               }),
         ),
-        Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: List<Widget>.generate(
-                _listSublist.length,
-                (index) => Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 12),
-                      child: CircleAvatar(
-                        radius: 4,
-                        backgroundColor: _activePage == index ? widget.currentPageIndicatorColor : widget.otherPageIndicatorColor,
-                      ),
-                    ))),
+        SizedBox(
+          height: 40,
+          child: SingleChildScrollView(
+              scrollDirection: Axis.horizontal,
+              physics: const ClampingScrollPhysics(),
+              child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: List<Widget>.generate(
+                      _listSublist.length,
+                      (index) => Padding(
+                          key: pageIndicatorKey[index],
+                          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 12),
+                          child: Container(
+                            height: 10,
+                            width: 10,
+                            decoration: BoxDecoration(shape: BoxShape.circle, border: Border.all(color: widget.currentPageIndicatorColor!), color: _activePage == index ? widget.currentPageIndicatorColor : Colors.transparent),
+                          ))))),
+        )
       ],
     );
   }
 
-  autoPageChange(page){
+  autoPageChange(page) {
     pageController.animateToPage(page, duration: const Duration(milliseconds: 300), curve: Curves.linear);
     setState(() {
       _isDragging = false;
     });
+
+    Scrollable.ensureVisible(pageIndicatorKey[page].currentContext!, alignment: 0.5, duration: const Duration(milliseconds: 100));
 
     Future.delayed(const Duration(milliseconds: 1200), () {
       setState(() {
