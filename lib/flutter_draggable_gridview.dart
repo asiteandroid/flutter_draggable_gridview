@@ -220,7 +220,7 @@ class DraggableGridViewBuilderState extends State<DraggableGridViewBuilder> {
       _isDragging = false;
     });
 
-    Scrollable.ensureVisible(pageIndicatorKey[page].currentContext!, alignment: 0.5, duration: const Duration(milliseconds: 100));
+    Scrollable.ensureVisible(pageIndicatorKey[_activePage].currentContext!, alignment: 0.5, duration: const Duration(milliseconds: 100));
 
     Future.delayed(const Duration(milliseconds: 1200), () {
       setState(() {
