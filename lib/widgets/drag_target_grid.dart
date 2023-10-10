@@ -242,7 +242,7 @@ class DragTargetGridState extends State<DragTargetGrid> {
 
   _onDragCancel(int index) {
     List<DraggableGridItem> newDragList = [];
-    if (_activePage == _listSublist.length - 1) {
+    if (_originPageIndex != _activePage) {
       if (_listSublist.last.length < subListLength) {
         if (!isGridInternalUpdate) {
           _listSublist[_originPageIndex].removeAt(_originIndex);
