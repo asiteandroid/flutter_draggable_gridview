@@ -19,4 +19,3 @@ int subListLength = 15;
 /// If, it is true then only draggable works with long press.
 /// and if it is false then it works with simple press.
 bool _isOnlyLongPress = true;
-int rn = 15;

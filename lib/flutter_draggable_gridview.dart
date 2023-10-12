@@ -74,9 +74,8 @@ class DraggableGridViewBuilder extends StatefulWidget {
 }
 
 class DraggableGridViewBuilderState extends State<DraggableGridViewBuilder> {
-  PageController pageController = PageController(keepPage: false);
-  GlobalKey _pageViewKey = GlobalKey();
-  GlobalKey g1 = GlobalKey();
+  PageController pageController = PageController(keepPage: true);
+  final _pageViewKey = GlobalKey();
   bool _isDragging = true;
   final List<GlobalKey> pageIndicatorKey = [];
 
@@ -105,7 +104,7 @@ class DraggableGridViewBuilderState extends State<DraggableGridViewBuilder> {
         setState(() {
           _activePage = pageController.page!.ceil();
         });
-        //Scrollable.ensureVisible(pageIndicatorKey[_activePage].currentContext!, alignment: 0.5, duration: const Duration(milliseconds: 100));
+        Scrollable.ensureVisible(pageIndicatorKey[_activePage].currentContext!, alignment: 0.5, duration: const Duration(milliseconds: 100));
       });
     });
   }
@@ -117,25 +116,17 @@ class DraggableGridViewBuilderState extends State<DraggableGridViewBuilder> {
 
     subListLength = widget.currentPageItemLength;
     _orgList = [...widget.children];
-    // pageIndicatorKey.clear();
+    pageIndicatorKey.clear();
     _listSublist.clear();
     _originalSublist.clear();
     for (var i = 0; i < _orgList.length; i += subListLength) {
       _listSublist.add(_orgList.sublist(i, i + subListLength > _orgList.length ? _orgList.length : i + subListLength));
-      // pageIndicatorKey.add(GlobalKey());
+      pageIndicatorKey.add(GlobalKey());
     }
     for (var i = 0; i < _orgList.length; i += subListLength) {
       _originalSublist.add(_orgList.sublist(i, i + subListLength > _orgList.length ? _orgList.length : i + subListLength));
     }
     _isOnlyLongPress = widget.isOnlyLongPress;
-    // print("_originalSublist length ${_originalSublist.length}");
-    // print("${pageIndicatorKey.length}");
-    if (_originalSublist.length < pageIndicatorKey.length) {
-      _pageViewKey = GlobalKey();
-
-      _activePage = _activePage - 1;
-      _originPageIndex = _activePage;
-    }
     setState(() {});
   }
 
@@ -167,7 +158,6 @@ class DraggableGridViewBuilderState extends State<DraggableGridViewBuilder> {
                     }
                   },
                   child: GridView.builder(
-                    //key: g1,
                     scrollDirection: widget.scrollDirection,
                     reverse: widget.reverse,
                     controller: widget.controller,
@@ -185,9 +175,6 @@ class DraggableGridViewBuilderState extends State<DraggableGridViewBuilder> {
                     clipBehavior: widget.clipBehavior,
                     gridDelegate: widget.gridDelegate,
                     itemBuilder: (_, index) {
-                      // if(pageIndex != _activePage){
-                      //   autoPageChange(pageIndex);
-                      // }
                       return (!_listSublist[pageIndex][index].isDraggable)
                           ? _listSublist[pageIndex][index].child
                           : DragTargetGrid(
@@ -215,17 +202,12 @@ class DraggableGridViewBuilderState extends State<DraggableGridViewBuilder> {
                   children: List<Widget>.generate(
                       _listSublist.length,
                       (index) => Padding(
-                          // key: pageIndicatorKey[index],
+                          key: pageIndicatorKey[index],
                           padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 12),
-                          child: Row(
-                            children: [
-                              Text(_listSublist.length.toString(),style: TextStyle(fontSize: 20),),
-                              Container(
-                                height: 10,
-                                width: 10,
-                                decoration: BoxDecoration(shape: BoxShape.circle, border: Border.all(color: widget.currentPageIndicatorColor!), color: _activePage == index ? widget.currentPageIndicatorColor : Colors.transparent),
-                              ),
-                            ],
+                          child: Container(
+                            height: 10,
+                            width: 10,
+                            decoration: BoxDecoration(shape: BoxShape.circle, border: Border.all(color: widget.currentPageIndicatorColor!), color: _activePage == index ? widget.currentPageIndicatorColor : Colors.transparent),
                           ))))),
         )
       ],
@@ -233,19 +215,17 @@ class DraggableGridViewBuilderState extends State<DraggableGridViewBuilder> {
   }
 
   autoPageChange(page) {
-    if (page < _activePage) {
-      pageController.animateToPage(page, duration: const Duration(milliseconds: 300), curve: Curves.linear);
+    pageController.animateToPage(page, duration: const Duration(milliseconds: 300), curve: Curves.linear);
+    setState(() {
+      _isDragging = false;
+    });
+
+    Scrollable.ensureVisible(pageIndicatorKey[_activePage].currentContext!, alignment: 0.5, duration: const Duration(milliseconds: 100));
+
+    Future.delayed(const Duration(milliseconds: 1200), () {
       setState(() {
-        _isDragging = false;
+        _isDragging = true;
       });
-
-      //Scrollable.ensureVisible(pageIndicatorKey[_activePage].currentContext!, alignment: 0.5, duration: const Duration(milliseconds: 100));
-
-      Future.delayed(const Duration(milliseconds: 1200), () {
-        setState(() {
-          _isDragging = true;
-        });
-      });
-    }
+    });
   }
 }
