@@ -217,10 +217,15 @@ class DraggableGridViewBuilderState extends State<DraggableGridViewBuilder> {
                       (index) => Padding(
                           // key: pageIndicatorKey[index],
                           padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 12),
-                          child: Container(
-                            height: 10,
-                            width: 10,
-                            decoration: BoxDecoration(shape: BoxShape.circle, border: Border.all(color: widget.currentPageIndicatorColor!), color: _activePage == index ? widget.currentPageIndicatorColor : Colors.transparent),
+                          child: Row(
+                            children: [
+                              Text(_listSublist.length.toString(),style: TextStyle(fontSize: 20),),
+                              Container(
+                                height: 10,
+                                width: 10,
+                                decoration: BoxDecoration(shape: BoxShape.circle, border: Border.all(color: widget.currentPageIndicatorColor!), color: _activePage == index ? widget.currentPageIndicatorColor : Colors.transparent),
+                              ),
+                            ],
                           ))))),
         )
       ],
