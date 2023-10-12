@@ -1,4 +1,5 @@
 import 'dart:developer';
+import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
@@ -54,16 +55,7 @@ class GridWithScrollControllerExampleState extends State<GridWithScrollControlle
         child: Column(
           children: [
             Expanded(
-              child: DraggableGridViewBuilder(
-                controller: _scrollController,
-                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: isTablet && MediaQuery.of(context).orientation == Orientation.landscape ? 5 : 3, childAspectRatio: 1, mainAxisSpacing: 0, crossAxisSpacing: 0),
-                children: _listOfDraggableGridItem,
-                shrinkWrap: true,
-                dragCompletion: onDragAccept,
-                isOnlyLongPress: true,
-                dragFeedback: feedback,
-                dragPlaceHolder: placeHolder
-              ),
+              child: DraggableGridViewBuilder(controller: _scrollController, gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: isTablet && MediaQuery.of(context).orientation == Orientation.landscape ? 5 : 3, childAspectRatio: 1, mainAxisSpacing: 0, crossAxisSpacing: 0), children: _listOfDraggableGridItem, shrinkWrap: true, dragCompletion: onDragAccept, isOnlyLongPress: true, dragFeedback: feedback, dragPlaceHolder: placeHolder),
             ),
           ],
         ),
@@ -71,18 +63,20 @@ class GridWithScrollControllerExampleState extends State<GridWithScrollControlle
     );
   }
 
-  Widget deleteItem(DraggableGridItem listOfDraggableGridItem) {
-    return InkWell(
-      onTap: (){
-        onRemoveItem(listOfDraggableGridItem);
-      },
-      child: Container(
-          decoration: const BoxDecoration(color: Colors.black12, shape: BoxShape.circle),
-          padding: const EdgeInsets.all(10.0),
-          child: const Icon(
-            Icons.delete,
-            size: 30,
-          )),
+  Widget deleteItem(int i) {
+    return Material(
+      child: InkWell(
+        onTap: () {
+          onRemoveItem(i);
+        },
+        child: Container(
+            decoration: const BoxDecoration(color: Colors.black12, shape: BoxShape.circle),
+            padding: const EdgeInsets.all(10.0),
+            child: const Icon(
+              Icons.delete,
+              size: 30,
+            )),
+      ),
     );
   }
 
@@ -117,15 +111,14 @@ class GridWithScrollControllerExampleState extends State<GridWithScrollControlle
         dragData: DragItemDataObject(),
         isDraggable: true,
         dragCallback: (context, isDragging) {
-          log('isDragging: $isDragging');
+          //log('isDragging: $isDragging');
         }));
 
     setState(() {});
   }
 
-  onRemoveItem(DraggableGridItem item) {
-    _listOfDraggableGridItem.remove(item);
-
+  onRemoveItem(int item) {
+    _listOfDraggableGridItem.removeAt(item);
     setState(() {});
   }
 
@@ -143,11 +136,11 @@ class GridWithScrollControllerExampleState extends State<GridWithScrollControlle
   }
 
   void onDragAccept(List<DraggableGridItem> list, int beforeIndex, int afterIndex) {
-    log('onDragAccept: $beforeIndex $afterIndex');
+    //log('onDragAccept: $beforeIndex $afterIndex');
   }
 
   void _generateImageData() {
-    for (int i = 0; i < 37; i++) {
+    for (int i = 0; i < 32; i++) {
       _listOfDraggableGridItem.add(
         DraggableGridItem(
             child: Padding(
@@ -163,19 +156,18 @@ class GridWithScrollControllerExampleState extends State<GridWithScrollControlle
                       ],
                     ),
                   ),
-                  // deleteItem(_listOfDraggableGridItem[i])
+                  Positioned(top: 0, left: 0, child: deleteItem(i))
                 ],
               ),
             ),
             dragData: DragItemDataObject(),
             isDraggable: true,
             dragCallback: (context, isDragging) {
-              log('isDragging: $isDragging');
+              //log('isDragging: $isDragging');
             }),
       );
     }
   }
 }
 
-
-class DragItemDataObject{}
+class DragItemDataObject {}
