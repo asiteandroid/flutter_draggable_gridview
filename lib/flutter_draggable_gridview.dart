@@ -124,13 +124,13 @@ class DraggableGridViewBuilderState extends State<DraggableGridViewBuilder> {
     }
     _isOnlyLongPress = widget.isOnlyLongPress;
     if (_originalSublist.length < pageIndicatorKey.length) {
-      _pageViewKey = GlobalKey();
+      // _pageViewKey = GlobalKey();
 
       _activePage = _activePage - 1;
       _originPageIndex = _activePage;
     }
     pageIndicatorKey.clear();
-    for (var i = 0; i < _orgList.length; i += subListLength) {
+    for (var element in _originalSublist) {
       pageIndicatorKey.add(GlobalKey());
     }
     setState(() {});

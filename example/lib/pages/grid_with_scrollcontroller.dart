@@ -60,16 +60,7 @@ class GridWithScrollControllerExampleState extends State<GridWithScrollControlle
               },
                 child: Text("ADD")),*/
             Expanded(
-              child: DraggableGridViewBuilder(
-                controller: _scrollController,
-                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: isTablet && MediaQuery.of(context).orientation == Orientation.landscape ? 5 : 3, childAspectRatio: 1, mainAxisSpacing: 0, crossAxisSpacing: 0),
-                children: _listOfDraggableGridItem,
-                shrinkWrap: true,
-                dragCompletion: onDragAccept,
-                isOnlyLongPress: true,
-                dragFeedback: feedback,
-                dragPlaceHolder: placeHolder
-              ),
+              child: DraggableGridViewBuilder(controller: _scrollController, gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: isTablet && MediaQuery.of(context).orientation == Orientation.landscape ? 5 : 3, childAspectRatio: 1, mainAxisSpacing: 0, crossAxisSpacing: 0), children: _listOfDraggableGridItem, shrinkWrap: true, dragCompletion: onDragAccept, isOnlyLongPress: true, dragFeedback: feedback, dragPlaceHolder: placeHolder),
             ),
           ],
         ),
@@ -77,11 +68,11 @@ class GridWithScrollControllerExampleState extends State<GridWithScrollControlle
     );
   }
 
-  Widget deleteItem(int listOfDraggableGridItem) {
+  Widget deleteItem(int index) {
     return Material(
       child: InkWell(
-        onTap: (){
-          onRemoveItem(listOfDraggableGridItem);
+        onTap: () {
+          onRemoveItem(_listOfDraggableGridItem[index]);
         },
         child: Container(
             decoration: const BoxDecoration(color: Colors.black12, shape: BoxShape.circle),
@@ -131,8 +122,8 @@ class GridWithScrollControllerExampleState extends State<GridWithScrollControlle
     setState(() {});
   }
 
-  onRemoveItem(int item) {
-    _listOfDraggableGridItem.removeAt(item);
+  onRemoveItem(DraggableGridItem item) {
+    _listOfDraggableGridItem.remove(item);
 
     setState(() {});
   }
@@ -157,8 +148,9 @@ class GridWithScrollControllerExampleState extends State<GridWithScrollControlle
   }
 
   void _generateImageData() {
-    for (int i = 0; i < 17; i++) {
-      _listOfDraggableGridItem.add(
+    List<DraggableGridItem> _dataList = [];
+    for (int i = 0; i < 32; i++) {
+      _dataList.add(
         DraggableGridItem(
             child: Padding(
               padding: const EdgeInsets.all(20.0),
@@ -184,8 +176,10 @@ class GridWithScrollControllerExampleState extends State<GridWithScrollControlle
             }),
       );
     }
+
+    _listOfDraggableGridItem.clear();
+    _listOfDraggableGridItem.addAll(_dataList);
   }
 }
 
-
-class DragItemDataObject{}
+class DragItemDataObject {}
