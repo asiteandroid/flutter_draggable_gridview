@@ -54,6 +54,11 @@ class GridWithScrollControllerExampleState extends State<GridWithScrollControlle
       body: SafeArea(
         child: Column(
           children: [
+            /*InkWell(
+              onTap: (){
+                onAddItem();
+              },
+                child: Text("ADD")),*/
             Expanded(
               child: DraggableGridViewBuilder(
                 controller: _scrollController,

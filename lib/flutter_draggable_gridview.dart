@@ -128,10 +128,10 @@ class DraggableGridViewBuilderState extends State<DraggableGridViewBuilder> {
 
       _activePage = _activePage - 1;
       _originPageIndex = _activePage;
-      pageIndicatorKey.clear();
-      for (var i = 0; i < _orgList.length; i += subListLength) {
-        pageIndicatorKey.add(GlobalKey());
-      }
+    }
+    pageIndicatorKey.clear();
+    for (var i = 0; i < _orgList.length; i += subListLength) {
+      pageIndicatorKey.add(GlobalKey());
     }
     setState(() {});
   }
