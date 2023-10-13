@@ -97,14 +97,6 @@ class DraggableGridViewBuilderState extends State<DraggableGridViewBuilder> {
       pageIndicatorKey.add(GlobalKey());
     }
     _activePage = 0;
-    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-      pageController.addListener(() {
-        setState(() {
-          _activePage = pageController.page!.ceil();
-        });
-        Scrollable.ensureVisible(pageIndicatorKey[_activePage].currentContext!, alignment: 0.5, duration: const Duration(milliseconds: 100));
-      });
-    });
   }
 
   @override
@@ -116,23 +108,24 @@ class DraggableGridViewBuilderState extends State<DraggableGridViewBuilder> {
     _orgList = [...widget.children];
     _listSublist.clear();
     _originalSublist.clear();
+    pageIndicatorKey.clear();
     for (var i = 0; i < _orgList.length; i += subListLength) {
       _listSublist.add(_orgList.sublist(i, i + subListLength > _orgList.length ? _orgList.length : i + subListLength));
-    }
-    for (var i = 0; i < _orgList.length; i += subListLength) {
       _originalSublist.add(_orgList.sublist(i, i + subListLength > _orgList.length ? _orgList.length : i + subListLength));
-    }
-    _isOnlyLongPress = widget.isOnlyLongPress;
-    if (_originalSublist.length < pageIndicatorKey.length) {
-      // _pageViewKey = GlobalKey();
-
-      _activePage = _activePage - 1;
-      _originPageIndex = _activePage;
-    }
-    pageIndicatorKey.clear();
-    for (var element in _originalSublist) {
       pageIndicatorKey.add(GlobalKey());
     }
+    _isOnlyLongPress = widget.isOnlyLongPress;
+
+    if (_originalSublist.length <= _activePage) {
+      _pageViewKey = GlobalKey();
+
+      _activePage--;
+
+      WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+        pageController.jumpToPage(_activePage);
+      });
+    }
+
     setState(() {});
   }
 
@@ -147,6 +140,12 @@ class DraggableGridViewBuilderState extends State<DraggableGridViewBuilder> {
               controller: pageController,
               pageSnapping: true,
               allowImplicitScrolling: false,
+              onPageChanged: (value) {
+                setState(() {
+                  _activePage = value;
+                });
+                Scrollable.ensureVisible(pageIndicatorKey[_activePage].currentContext!, alignment: 0.5, duration: const Duration(milliseconds: 100));
+              },
               scrollDirection: Axis.horizontal,
               physics: const ClampingScrollPhysics(),
               itemBuilder: (_, pageIndex) {
@@ -157,9 +156,13 @@ class DraggableGridViewBuilderState extends State<DraggableGridViewBuilder> {
 
                     if (_draggedGridItem != null && _isDragging) {
                       if (dragOffset.dx > MediaQuery.of(context).size.width - 30) {
-                        autoPageChange(_activePage + 1);
+                        if (_activePage + 1 < _listSublist.length) {
+                          autoPageChange(_activePage + 1);
+                        }
                       } else if (dragOffset.dx < 30) {
-                        autoPageChange(_activePage - 1);
+                        if (_activePage - 1 >= 0) {
+                          autoPageChange(_activePage - 1);
+                        }
                       }
                     }
                   },
