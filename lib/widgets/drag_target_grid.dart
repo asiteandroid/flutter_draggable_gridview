@@ -168,8 +168,7 @@ class DragTargetGridState extends State<DragTargetGrid> {
         _draggedGridItem = DraggableGridItem(child: widget.placeHolder ?? const EmptyItem(), isDraggable: true, dragData: null);
       }
 
-      print("Last index ${_lastIndex}");
-      _listSublist[widget.pageIndex].insert(
+   _listSublist[widget.pageIndex].insert(
         _lastIndex,
         DraggableGridItem(
           child: widget.placeHolder ?? const EmptyItem(),
@@ -231,7 +230,7 @@ class DragTargetGridState extends State<DragTargetGrid> {
       }
       _listSublist.clear();
       _originalSublist.clear();
-      for (int i = 0; i <= tempList.length; i += subListLength) {
+      for (int i = 0; i < tempList.length; i += subListLength) {
         _listSublist.add(tempList.sublist(i, i + subListLength > tempList.length ? tempList.length : i + subListLength));
         _originalSublist.add(tempList.sublist(i, i + subListLength > tempList.length ? tempList.length : i + subListLength));
       }
@@ -250,6 +249,9 @@ class DragTargetGridState extends State<DragTargetGrid> {
         _listSublist[_originPageIndex].removeWhere((element) {
           return (widget.placeHolder != null) ? element.child is PlaceHolderWidget : element.child is EmptyItem;
         });
+        _listSublist[widget.pageIndex].removeWhere((element) {
+          return (widget.placeHolder != null) ? element.child is PlaceHolderWidget : element.child is EmptyItem;
+        });
 
         _listSublist.last.insert(_listSublist.last.length, _originalSublist[widget.pageIndex][_draggedIndex]);
 
@@ -263,7 +265,7 @@ class DragTargetGridState extends State<DragTargetGrid> {
 
         _listSublist.clear();
         _originalSublist.clear();
-        for (int i = 0; i <= tempList.length; i += subListLength) {
+        for (int i = 0; i < tempList.length; i += subListLength) {
           _listSublist.add(tempList.sublist(i, i + subListLength > tempList.length ? tempList.length : i + subListLength));
           _originalSublist.add(tempList.sublist(i, i + subListLength > tempList.length ? tempList.length : i + subListLength));
         }
@@ -279,7 +281,7 @@ class DragTargetGridState extends State<DragTargetGrid> {
 
       _listSublist.clear();
       _originalSublist.clear();
-      for (int i = 0; i <= tempList.length; i += subListLength) {
+      for (int i = 0; i < tempList.length; i += subListLength) {
         _listSublist.add(tempList.sublist(i, i + subListLength > tempList.length ? tempList.length : i + subListLength));
         _originalSublist.add(tempList.sublist(i, i + subListLength > tempList.length ? tempList.length : i + subListLength));
       }

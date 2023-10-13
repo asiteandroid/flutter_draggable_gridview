@@ -75,7 +75,7 @@ class DraggableGridViewBuilder extends StatefulWidget {
 
 class DraggableGridViewBuilderState extends State<DraggableGridViewBuilder> {
   PageController pageController = PageController(keepPage: true);
-  final _pageViewKey = GlobalKey();
+  GlobalKey _pageViewKey = GlobalKey();
   bool _isDragging = true;
   final List<GlobalKey> pageIndicatorKey = [];
 
@@ -93,10 +93,8 @@ class DraggableGridViewBuilderState extends State<DraggableGridViewBuilder> {
     _originalSublist.clear();
     for (var i = 0; i < _orgList.length; i += subListLength) {
       _listSublist.add(_orgList.sublist(i, i + subListLength > _orgList.length ? _orgList.length : i + subListLength));
-      pageIndicatorKey.add(GlobalKey());
-    }
-    for (var i = 0; i < _orgList.length; i += subListLength) {
       _originalSublist.add(_orgList.sublist(i, i + subListLength > _orgList.length ? _orgList.length : i + subListLength));
+      pageIndicatorKey.add(GlobalKey());
     }
     _activePage = 0;
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
@@ -116,17 +114,25 @@ class DraggableGridViewBuilderState extends State<DraggableGridViewBuilder> {
 
     subListLength = widget.currentPageItemLength;
     _orgList = [...widget.children];
-    pageIndicatorKey.clear();
     _listSublist.clear();
     _originalSublist.clear();
     for (var i = 0; i < _orgList.length; i += subListLength) {
       _listSublist.add(_orgList.sublist(i, i + subListLength > _orgList.length ? _orgList.length : i + subListLength));
-      pageIndicatorKey.add(GlobalKey());
     }
     for (var i = 0; i < _orgList.length; i += subListLength) {
       _originalSublist.add(_orgList.sublist(i, i + subListLength > _orgList.length ? _orgList.length : i + subListLength));
     }
     _isOnlyLongPress = widget.isOnlyLongPress;
+    if (_originalSublist.length < pageIndicatorKey.length) {
+      _pageViewKey = GlobalKey();
+
+      _activePage = _activePage - 1;
+      _originPageIndex = _activePage;
+      pageIndicatorKey.clear();
+      for (var i = 0; i < _orgList.length; i += subListLength) {
+        pageIndicatorKey.add(GlobalKey());
+      }
+    }
     setState(() {});
   }
 

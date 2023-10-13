@@ -1,5 +1,6 @@
 import 'dart:developer';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter_draggable_gridview/flutter_draggable_gridview.dart';
@@ -14,7 +15,7 @@ class GridWithScrollControllerExample extends StatefulWidget {
 }
 
 class GridWithScrollControllerExampleState extends State<GridWithScrollControllerExample> {
-  List<DraggableGridItem> _listOfDraggableGridItem = [];
+  final List<DraggableGridItem> _listOfDraggableGridItem = [];
   final ScrollController _scrollController = ScrollController(
     initialScrollOffset: 0.0,
     keepScrollOffset: true,
@@ -71,18 +72,20 @@ class GridWithScrollControllerExampleState extends State<GridWithScrollControlle
     );
   }
 
-  Widget deleteItem(DraggableGridItem listOfDraggableGridItem) {
-    return InkWell(
-      onTap: (){
-        onRemoveItem(listOfDraggableGridItem);
-      },
-      child: Container(
-          decoration: const BoxDecoration(color: Colors.black12, shape: BoxShape.circle),
-          padding: const EdgeInsets.all(10.0),
-          child: const Icon(
-            Icons.delete,
-            size: 30,
-          )),
+  Widget deleteItem(int listOfDraggableGridItem) {
+    return Material(
+      child: InkWell(
+        onTap: (){
+          onRemoveItem(listOfDraggableGridItem);
+        },
+        child: Container(
+            decoration: const BoxDecoration(color: Colors.black12, shape: BoxShape.circle),
+            padding: const EdgeInsets.all(10.0),
+            child: const Icon(
+              Icons.delete,
+              size: 30,
+            )),
+      ),
     );
   }
 
@@ -123,8 +126,8 @@ class GridWithScrollControllerExampleState extends State<GridWithScrollControlle
     setState(() {});
   }
 
-  onRemoveItem(DraggableGridItem item) {
-    _listOfDraggableGridItem.remove(item);
+  onRemoveItem(int item) {
+    _listOfDraggableGridItem.removeAt(item);
 
     setState(() {});
   }
@@ -133,7 +136,9 @@ class GridWithScrollControllerExampleState extends State<GridWithScrollControlle
     return PlaceHolderWidget(
       child: InkWell(
         onTap: () {
-          print("Place holder index $index");
+          if (kDebugMode) {
+            print("Place holder index $index");
+          }
         },
         child: Container(
           color: Colors.white,
@@ -147,7 +152,7 @@ class GridWithScrollControllerExampleState extends State<GridWithScrollControlle
   }
 
   void _generateImageData() {
-    for (int i = 0; i < 37; i++) {
+    for (int i = 0; i < 17; i++) {
       _listOfDraggableGridItem.add(
         DraggableGridItem(
             child: Padding(
@@ -159,11 +164,11 @@ class GridWithScrollControllerExampleState extends State<GridWithScrollControlle
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Image.asset('assets/4.jpeg'),
-                        Text(i.toString(), style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+                        Text(i.toString(), style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
                       ],
                     ),
                   ),
-                  // deleteItem(_listOfDraggableGridItem[i])
+                  deleteItem(i)
                 ],
               ),
             ),
