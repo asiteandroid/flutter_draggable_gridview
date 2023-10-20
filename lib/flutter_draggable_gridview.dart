@@ -66,8 +66,9 @@ class DraggableGridViewBuilder extends StatefulWidget {
   final int currentPageItemLength;
   final Color? currentPageIndicatorColor;
   final Color? otherPageIndicatorColor;
+  final PageController? pageController;
 
-  const DraggableGridViewBuilder({Key? key, required this.gridDelegate, required this.children, required this.dragCompletion, this.isOnlyLongPress = true, this.dragFeedback, this.dragChildWhenDragging, this.dragPlaceHolder, this.scrollDirection = Axis.vertical, this.reverse = false, this.controller, this.primary, this.physics, this.shrinkWrap = false, this.padding, this.addAutomaticKeepAlives = true, this.addRepaintBoundaries = true, this.addSemanticIndexes = true, this.cacheExtent, this.semanticChildCount, this.dragStartBehavior = DragStartBehavior.start, this.keyboardDismissBehavior = ScrollViewKeyboardDismissBehavior.manual, this.restorationId, this.clipBehavior = Clip.hardEdge, this.currentPageItemLength = 15, this.currentPageIndicatorColor = Colors.blue, this.otherPageIndicatorColor = Colors.grey}) : super(key: key);
+  const DraggableGridViewBuilder({Key? key, required this.gridDelegate, required this.children, required this.dragCompletion, this.isOnlyLongPress = true, this.dragFeedback, this.dragChildWhenDragging, this.dragPlaceHolder, this.scrollDirection = Axis.vertical, this.reverse = false, this.controller, this.primary, this.physics, this.shrinkWrap = false, this.padding, this.addAutomaticKeepAlives = true, this.addRepaintBoundaries = true, this.addSemanticIndexes = true, this.cacheExtent, this.semanticChildCount, this.dragStartBehavior = DragStartBehavior.start, this.keyboardDismissBehavior = ScrollViewKeyboardDismissBehavior.manual, this.restorationId, this.clipBehavior = Clip.hardEdge, this.currentPageItemLength = 15, this.currentPageIndicatorColor = Colors.blue, this.otherPageIndicatorColor = Colors.grey, this.pageController}) : super(key: key);
 
   @override
   DraggableGridViewBuilderState createState() => DraggableGridViewBuilderState();
@@ -97,6 +98,7 @@ class DraggableGridViewBuilderState extends State<DraggableGridViewBuilder> {
       pageIndicatorKey.add(GlobalKey());
     }
     _activePage = 0;
+    pageController = widget.pageController ?? pageController;
   }
 
   @override
@@ -125,7 +127,6 @@ class DraggableGridViewBuilderState extends State<DraggableGridViewBuilder> {
         pageController.jumpToPage(_activePage);
       });
     }
-
     setState(() {});
   }
 

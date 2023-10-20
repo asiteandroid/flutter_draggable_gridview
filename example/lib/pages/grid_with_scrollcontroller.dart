@@ -20,6 +20,7 @@ class GridWithScrollControllerExampleState extends State<GridWithScrollControlle
     initialScrollOffset: 0.0,
     keepScrollOffset: true,
   );
+  PageController pageController = PageController();
 
   bool isTablet = false;
 
@@ -54,13 +55,15 @@ class GridWithScrollControllerExampleState extends State<GridWithScrollControlle
       body: SafeArea(
         child: Column(
           children: [
-            /*InkWell(
-              onTap: (){
-                onAddItem();
-              },
-                child: Text("ADD")),*/
+            InkWell(
+                onTap: () {
+                  onAddItem();
+                },
+                child: Text("ADD")),
             Expanded(
-              child: DraggableGridViewBuilder(controller: _scrollController, gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: isTablet && MediaQuery.of(context).orientation == Orientation.landscape ? 5 : 3, childAspectRatio: 1, mainAxisSpacing: 0, crossAxisSpacing: 0), children: _listOfDraggableGridItem, shrinkWrap: true, dragCompletion: onDragAccept, isOnlyLongPress: true, dragFeedback: feedback, dragPlaceHolder: placeHolder),
+              child: DraggableGridViewBuilder(
+                pageController: pageController,
+                  controller: _scrollController, gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: isTablet && MediaQuery.of(context).orientation == Orientation.landscape ? 5 : 3, childAspectRatio: 1, mainAxisSpacing: 0, crossAxisSpacing: 0), children: _listOfDraggableGridItem, shrinkWrap: true, dragCompletion: onDragAccept, isOnlyLongPress: true, dragFeedback: feedback, dragPlaceHolder: placeHolder),
             ),
           ],
         ),
@@ -100,25 +103,25 @@ class GridWithScrollControllerExampleState extends State<GridWithScrollControlle
   }
 
   onAddItem() {
-    _listOfDraggableGridItem.add(DraggableGridItem(
-        child: Padding(
-          padding: const EdgeInsets.all(20.0),
-          child: Card(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Image.asset('assets/4.jpeg'),
-                const Text("new", style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
-              ],
-            ),
-          ),
-        ),
-        dragData: DragItemDataObject(),
-        isDraggable: true,
-        dragCallback: (context, isDragging) {
-          log('isDragging: $isDragging');
-        }));
-
+    // _listOfDraggableGridItem.add(DraggableGridItem(
+    //     child: Padding(
+    //       padding: const EdgeInsets.all(20.0),
+    //       child: Card(
+    //         child: Column(
+    //           mainAxisAlignment: MainAxisAlignment.center,
+    //           children: [
+    //             Image.asset('assets/4.jpeg'),
+    //             const Text("new", style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+    //           ],
+    //         ),
+    //       ),
+    //     ),
+    //     dragData: DragItemDataObject(),
+    //     isDraggable: true,
+    //     dragCallback: (context, isDragging) {
+    //       log('isDragging: $isDragging');
+    //     }));
+    pageController.jumpToPage(1);
     setState(() {});
   }
 
