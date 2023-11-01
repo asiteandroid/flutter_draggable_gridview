@@ -184,7 +184,6 @@ class DragTargetGridState extends State<DragTargetGrid> {
 
   /// This method will execute when dragging is completes or else dragging is cancelled.
   void _onDragComplete(int index) {
-    print("_onDragComplete");
     bool placeHolderRemove = checkPlaceHolder();
     List<DraggableGridItem> newDragList = [];
     if (_draggedIndex == -1) return;
@@ -240,17 +239,9 @@ class DragTargetGridState extends State<DragTargetGrid> {
   }
 
   _onDragCancel() {
-    print("_onDragCancel");
     List<DraggableGridItem> newDragList = [];
     if (_originPageIndex != _activePage && _activePage > _originPageIndex) {
       if (_activePage == (_listSublist.length - 1) && _listSublist.last.length < subListLength) {
-        /*_listSublist[_originPageIndex].removeWhere((element) {
-          print("OriginPageInddex item remove ${_listSublist[_originPageIndex].length}=> ${(widget.placeHolder != null) ? element.child is PlaceHolderWidget : element.child is EmptyItem}");
-          return (widget.placeHolder != null) ? element.child is PlaceHolderWidget : element.child is EmptyItem;
-        });
-        _listSublist[_activePage].removeWhere((element) {
-          return (widget.placeHolder != null) ? element.child is PlaceHolderWidget : element.child is EmptyItem;
-        });*/
         checkPlaceHolder();
 
         if (!isGridInternalUpdate) {
@@ -285,28 +276,28 @@ class DragTargetGridState extends State<DragTargetGrid> {
 
   bool checkPlaceHolder() {
     bool isPlaceHolderRemove = false;
-    _listSublist.forEach((element) {
+    for (var element in _listSublist) {
       if (element.any((element) => element.child is PlaceHolderWidget || element.child is EmptyItem)) {
         element.removeWhere((childElement) {
           isPlaceHolderRemove = true;
           return (widget.placeHolder != null) ? childElement.child is PlaceHolderWidget : childElement is EmptyItem;
         });
       }
-    });
+    }
     return isPlaceHolderRemove;
   }
 
   _dragCancelInSamePage(List<DraggableGridItem> newDragList) {
-    _originalSublist.forEach((element) {
+    for (var element in _originalSublist) {
       element.removeWhere((element) {
         return (widget.placeHolder != null) ? element.child is PlaceHolderWidget : element.child is EmptyItem;
       });
-    });
-    _listSublist.forEach((element) {
+    }
+    for (var element in _listSublist) {
       element.removeWhere((element) {
         return (widget.placeHolder != null) ? element.child is PlaceHolderWidget : element.child is EmptyItem;
       });
-    });
+    }
     List<DraggableGridItem> tempList = [];
 
     for (var element in _originalSublist) {
