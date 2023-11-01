@@ -236,7 +236,7 @@ class DragTargetGridState extends State<DragTargetGrid> {
         _originalSublist.add(tempList.sublist(i, i + subListLength > tempList.length ? tempList.length : i + subListLength));
       }
     }
-    setDefaultValue(newDragList, false);
+    setDefaultValue(newDragList, false, true);
   }
 
   _onDragCancel() {
@@ -244,16 +244,18 @@ class DragTargetGridState extends State<DragTargetGrid> {
     List<DraggableGridItem> newDragList = [];
     if (_originPageIndex != _activePage && _activePage > _originPageIndex) {
       if (_activePage == (_listSublist.length - 1) && _listSublist.last.length < subListLength) {
+        /*_listSublist[_originPageIndex].removeWhere((element) {
+          print("OriginPageInddex item remove ${_listSublist[_originPageIndex].length}=> ${(widget.placeHolder != null) ? element.child is PlaceHolderWidget : element.child is EmptyItem}");
+          return (widget.placeHolder != null) ? element.child is PlaceHolderWidget : element.child is EmptyItem;
+        });
+        _listSublist[_activePage].removeWhere((element) {
+          return (widget.placeHolder != null) ? element.child is PlaceHolderWidget : element.child is EmptyItem;
+        });*/
+        checkPlaceHolder();
+
         if (!isGridInternalUpdate) {
           _listSublist[_originPageIndex].removeAt(_originIndex);
         }
-        _listSublist[_originPageIndex].removeWhere((element) {
-          return (widget.placeHolder != null) ? element.child is PlaceHolderWidget : element.child is EmptyItem;
-        });
-        _listSublist[widget.pageIndex].removeWhere((element) {
-          return (widget.placeHolder != null) ? element.child is PlaceHolderWidget : element.child is EmptyItem;
-        });
-
         _listSublist.last.insert(_listSublist.last.length, _originalSublist[widget.pageIndex][_draggedIndex]);
 
         List<DraggableGridItem> tempList = [];
@@ -270,14 +272,14 @@ class DragTargetGridState extends State<DragTargetGrid> {
           _listSublist.add(tempList.sublist(i, i + subListLength > tempList.length ? tempList.length : i + subListLength));
           _originalSublist.add(tempList.sublist(i, i + subListLength > tempList.length ? tempList.length : i + subListLength));
         }
-        setDefaultValue(newDragList, false);
+        setDefaultValue(newDragList, false, false);
       } else {
         _dragCancelInSamePage(newDragList);
-        setDefaultValue(newDragList, true);
+        setDefaultValue(newDragList, true, false);
       }
     } else {
       _dragCancelInSamePage(newDragList);
-      setDefaultValue(newDragList, true);
+      setDefaultValue(newDragList, true, false);
     }
   }
 
@@ -322,14 +324,14 @@ class DragTargetGridState extends State<DragTargetGrid> {
     }
   }
 
-  setDefaultValue(List<DraggableGridItem> list, bool dragCancel) {
+  setDefaultValue(List<DraggableGridItem> list, bool dragCancel, bool isDragCompleted) {
     _dragStarted = false;
     _dragEnded = true;
     widget.onChangeCallback?.call();
     if (!dragCancel) {
       _draggedIndex = subListLength * (_originPageIndex) + _draggedIndex;
-      if (_activePage == (_listSublist.length - 1)) {
-        _lastIndex = subListLength * (_activePage) + _listSublist.last.length;
+      if (_activePage == (_listSublist.length - 1) && !isDragCompleted) {
+        _lastIndex = subListLength * (_activePage) + (_listSublist.last.length-1);
       } else {
         _lastIndex = subListLength * (_activePage) + _lastIndex;
       }
