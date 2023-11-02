@@ -118,11 +118,7 @@ class DraggableGridViewBuilderState extends State<DraggableGridViewBuilder> {
     }
     _isOnlyLongPress = widget.isOnlyLongPress;
 
-    if (oldWidget.pageController != widget.pageController) {
-      pageController = widget.pageController ?? pageController;
-      _activePage = 0;
-      _pageViewKey = GlobalKey();
-    } else if (_originalSublist.length <= _activePage) {
+    if (_originalSublist.length <= _activePage) {
       _pageViewKey = GlobalKey();
 
       _activePage--;
