@@ -67,8 +67,9 @@ class DraggableGridViewBuilder extends StatefulWidget {
   final Color? currentPageIndicatorColor;
   final Color? otherPageIndicatorColor;
   final PageController? pageController;
+  final bool isLtrDirection;
 
-  const DraggableGridViewBuilder({Key? key, required this.gridDelegate, required this.children, required this.dragCompletion, this.isOnlyLongPress = true, this.dragFeedback, this.dragChildWhenDragging, this.dragPlaceHolder, this.scrollDirection = Axis.vertical, this.reverse = false, this.controller, this.primary, this.physics, this.shrinkWrap = false, this.padding, this.addAutomaticKeepAlives = true, this.addRepaintBoundaries = true, this.addSemanticIndexes = true, this.cacheExtent, this.semanticChildCount, this.dragStartBehavior = DragStartBehavior.start, this.keyboardDismissBehavior = ScrollViewKeyboardDismissBehavior.manual, this.restorationId, this.clipBehavior = Clip.hardEdge, this.currentPageItemLength = 15, this.currentPageIndicatorColor = Colors.blue, this.otherPageIndicatorColor = Colors.grey, this.pageController}) : super(key: key);
+  const DraggableGridViewBuilder({Key? key, required this.gridDelegate, required this.children, required this.dragCompletion, this.isOnlyLongPress = true, this.dragFeedback, this.dragChildWhenDragging, this.dragPlaceHolder, this.scrollDirection = Axis.vertical, this.reverse = false, this.controller, this.primary, this.physics, this.shrinkWrap = false, this.padding, this.addAutomaticKeepAlives = true, this.addRepaintBoundaries = true, this.addSemanticIndexes = true, this.cacheExtent, this.semanticChildCount, this.dragStartBehavior = DragStartBehavior.start, this.keyboardDismissBehavior = ScrollViewKeyboardDismissBehavior.manual, this.restorationId, this.clipBehavior = Clip.hardEdge, this.currentPageItemLength = 15, this.currentPageIndicatorColor = Colors.blue, this.otherPageIndicatorColor = Colors.grey, this.pageController, this.isLtrDirection = true}) : super(key: key);
 
   @override
   DraggableGridViewBuilderState createState() => DraggableGridViewBuilderState();
@@ -156,13 +157,17 @@ class DraggableGridViewBuilderState extends State<DraggableGridViewBuilder> {
                     var dragOffset = renderObject.localToGlobal(event.localPosition);
 
                     if (_draggedGridItem != null && _isDragging) {
-                      if (dragOffset.dx > MediaQuery.of(context).size.width - 30) {
-                        if (_activePage + 1 < _listSublist.length) {
-                          autoPageChange(_activePage + 1);
+                      if (widget.isLtrDirection) {
+                        if (dragOffset.dx > MediaQuery.of(context).size.width - 30) {
+                          moveToNextPage();
+                        } else if (dragOffset.dx < 30) {
+                          moveToPreviousPage();
                         }
-                      } else if (dragOffset.dx < 30) {
-                        if (_activePage - 1 >= 0) {
-                          autoPageChange(_activePage - 1);
+                      } else {
+                        if (dragOffset.dx < 30) {
+                          moveToNextPage();
+                        } else if (dragOffset.dx > MediaQuery.of(context).size.width - 30) {
+                          moveToPreviousPage();
                         }
                       }
                     }
@@ -222,6 +227,18 @@ class DraggableGridViewBuilderState extends State<DraggableGridViewBuilder> {
         )
       ],
     );
+  }
+
+  moveToNextPage() {
+    if (_activePage + 1 < _listSublist.length) {
+      autoPageChange(_activePage + 1);
+    }
+  }
+
+  moveToPreviousPage() {
+    if (_activePage - 1 >= 0) {
+      autoPageChange(_activePage - 1);
+    }
   }
 
   autoPageChange(page) {
