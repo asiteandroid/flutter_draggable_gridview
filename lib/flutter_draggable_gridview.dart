@@ -153,21 +153,30 @@ class DraggableGridViewBuilderState extends State<DraggableGridViewBuilder> {
               itemBuilder: (_, pageIndex) {
                 return Listener(
                   onPointerMove: (event) {
-                    var renderObject = context.findRenderObject() as RenderBox;
-                    var dragOffset = renderObject.localToGlobal(event.localPosition);
+                    var renderObject = context.findRenderObject();
+                    if(renderObject != null) {
+                      var renderObjectData = renderObject as RenderBox;
+                      var dragOffset = renderObjectData.localToGlobal(event.localPosition);
 
-                    if (_draggedGridItem != null && _isDragging) {
-                      if (widget.isLtrDirection) {
-                        if (dragOffset.dx > MediaQuery.of(context).size.width - 30) {
-                          moveToNextPage();
-                        } else if (dragOffset.dx < 30) {
-                          moveToPreviousPage();
-                        }
-                      } else {
-                        if (dragOffset.dx < 30) {
-                          moveToNextPage();
-                        } else if (dragOffset.dx > MediaQuery.of(context).size.width - 30) {
-                          moveToPreviousPage();
+                      if (_draggedGridItem != null && _isDragging) {
+                        if (widget.isLtrDirection) {
+                          if (dragOffset.dx > MediaQuery
+                              .of(context)
+                              .size
+                              .width - 30) {
+                            moveToNextPage();
+                          } else if (dragOffset.dx < 30) {
+                            moveToPreviousPage();
+                          }
+                        } else {
+                          if (dragOffset.dx < 30) {
+                            moveToNextPage();
+                          } else if (dragOffset.dx > MediaQuery
+                              .of(context)
+                              .size
+                              .width - 30) {
+                            moveToPreviousPage();
+                          }
                         }
                       }
                     }
